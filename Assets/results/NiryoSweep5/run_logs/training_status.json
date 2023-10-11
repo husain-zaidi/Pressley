@@ -1,0 +1,29 @@
+{
+    "NiroSweepBehavior": {
+        "checkpoints": [
+            {
+                "steps": 6628,
+                "file_path": "results/NiryoSweep5/NiroSweepBehavior/NiroSweepBehavior-6628.onnx",
+                "reward": 0.0,
+                "creation_time": 1697033253.9928858,
+                "auxillary_file_paths": [
+                    "results/NiryoSweep5/NiroSweepBehavior/NiroSweepBehavior-6628.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 6628,
+            "file_path": "results/NiryoSweep5/NiroSweepBehavior.onnx",
+            "reward": 0.0,
+            "creation_time": 1697033253.9928858,
+            "auxillary_file_paths": [
+                "results/NiryoSweep5/NiroSweepBehavior/NiroSweepBehavior-6628.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.30.0",
+        "torch_version": "1.11.0+cu102"
+    }
+}

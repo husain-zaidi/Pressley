@@ -1,0 +1,2 @@
+conda activate unity
+mlagents-learn config/niryo_sweep.yaml --run-id=NiryoSweep1
