@@ -1,0 +1,14 @@
+mat1 and mat2 shapes cannot be multiplied (5x10496 and 512x512)
+
+
+both image and action embeddings should be same size
+
+
+resnet gives 2048 size embeddings
+so I added a Linear layer to make it 512
+
+what is the relation between context length and batch size
+
+
+input should be batch X Time X tokensize
+fix loss computation
