@@ -25,8 +25,7 @@ class _TransformerLayer(nn.Module):
         self.dropout_ff = nn.Dropout(dropout_rate)
         self._return_attention_scores = return_attention_scores
 
-    def forward(self, x: torch.Tensor, attention_mask: torch.Tensor,
-                training: bool) -> Tuple[torch.Tensor, Union[torch.Tensor, None]]:
+    def forward(self, x: torch.Tensor, attention_mask: torch.Tensor) -> Tuple[torch.Tensor, Union[torch.Tensor, None]]:
         """Calls the layer.
 
         Args:
@@ -90,7 +89,6 @@ class Transformer(nn.Module):
     def forward(
         self,
         x: torch.Tensor,
-        training: bool,
         attention_mask: torch.Tensor,
     ) -> Union[torch.Tensor, Tuple[torch.Tensor, List[torch.Tensor]]]:
         """Calls the layer.
@@ -103,7 +101,7 @@ class Transformer(nn.Module):
         scores = []
 
         for layer in self._layers:
-            x, score = layer(x, attention_mask=attention_mask, training=training)
+            x, score = layer(x, attention_mask=attention_mask)
             if score is not None:
                 scores.append(score)
         x = self._output_tokens(x)
