@@ -1,15 +1,8 @@
+# I forgot where I got this from. Probably pure GPT4
+# This has encoder so thats why not using it
 import torch
 import torch.nn as nn
 import math
-
-# Define some constants
-d_model = 512 # Embedding dimension
-nhead = 8 # Number of attention heads
-num_encoder_layers = 6 # Number of encoder layers
-num_decoder_layers = 6 # Number of decoder layers
-dim_feedforward = 2048 # Dimension of feedforward network
-dropout = 0.1 # Dropout probability
-max_len = 100 # Maximum length of input sequence
 
 # Define positional encoding
 class PositionalEncoding(nn.Module):
@@ -31,28 +24,38 @@ class PositionalEncoding(nn.Module):
 
 # Define transformer model
 class TransformerModel(nn.Module):
-    def __init__(self, d_model, nhead, num_encoder_layers, num_decoder_layers, dim_feedforward, dropout, max_len):
+    def __init__(self):
         super(TransformerModel, self).__init__()
         self.model_type = 'Transformer'
+        
+        self.d_model = 512 # Embedding dimension
+        self.nhead = 8 # Number of attention heads
+        self.num_encoder_layers = 6 # Number of encoder layers
+        self.num_decoder_layers = 6 # Number of decoder layers
+        self.dim_feedforward = 2048 # Dimension of feedforward network
+        self.dropout = 0.1 # Dropout probability
+        self.max_len = 100 # Maximum length of input sequence
+        self.src_vocab_size = 256
+        self.tgt_vocab_size = 256
 
         # Define encoder and decoder layers
-        encoder_layer = nn.TransformerEncoderLayer(d_model, nhead, dim_feedforward, dropout)
-        decoder_layer = nn.TransformerDecoderLayer(d_model, nhead, dim_feedforward, dropout)
+        encoder_layer = nn.TransformerEncoderLayer(self.d_model, self.nhead, self.dim_feedforward, self.dropout)
+        decoder_layer = nn.TransformerDecoderLayer(self.d_model, self.nhead, self.dim_feedforward, self.dropout)
 
         # Define encoder and decoder
-        self.encoder = nn.TransformerEncoder(encoder_layer, num_encoder_layers)
-        self.decoder = nn.TransformerDecoder(decoder_layer, num_decoder_layers)
+        self.encoder = nn.TransformerEncoder(encoder_layer, self.num_encoder_layers)
+        self.decoder = nn.TransformerDecoder(decoder_layer, self.num_decoder_layers)
 
         # Define positional encoding
-        self.pos_encoder = PositionalEncoding(d_model, dropout, max_len)
-        self.pos_decoder = PositionalEncoding(d_model, dropout, max_len)
+        self.pos_encoder = PositionalEncoding(self.d_model, self.dropout, self.max_len)
+        self.pos_decoder = PositionalEncoding(self.d_model, self.dropout, self.max_len)
 
         # Define input and output embeddings
-        self.src_embed = nn.Embedding(src_vocab_size, d_model)
-        self.tgt_embed = nn.Embedding(tgt_vocab_size, d_model)
+        self.src_embed = nn.Embedding(self.src_vocab_size, self.d_model)
+        self.tgt_embed = nn.Embedding(self.tgt_vocab_size, self.d_model)
 
         # Define output linear layer
-        self.linear = nn.Linear(d_model, tgt_vocab_size)
+        self.linear = nn.Linear(self.d_model, self.tgt_vocab_size)
 
         # Initialize parameters
         self.init_weights()
@@ -69,12 +72,12 @@ class TransformerModel(nn.Module):
 
     def forward(self, src, tgt, src_mask=None, tgt_mask=None, src_padding_mask=None, tgt_padding_mask=None, memory_key_padding_mask=None):
         # Embed and encode the source sequence
-        src = self.src_embed(src) * math.sqrt(d_model)
+        src = self.src_embed(src) * math.sqrt(self.d_model)
         src = self.pos_encoder(src)
         memory = self.encoder(src, mask=src_mask, src_key_padding_mask=src_padding_mask)
 
         # Embed and decode the target sequence
-        tgt = self.tgt_embed(tgt) * math.sqrt(d_model)
+        tgt = self.tgt_embed(tgt) * math.sqrt(self.d_model)
         tgt = self.pos_decoder(tgt)
         output = self.decoder(tgt, memory, tgt_mask=tgt_mask, memory_mask=src_mask,
                               tgt_key_padding_mask=tgt_padding_mask,
@@ -84,3 +87,4 @@ class TransformerModel(nn.Module):
         output = self.linear(output)
 
         return output
+    

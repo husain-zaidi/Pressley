@@ -4,12 +4,12 @@ import torch
 from torch.nn import functional as F
 
 # define hyperparameters
-lr = 0.0003 # learning rate
-bs = 10 # batch size
+lr = 0.00001 # learning rate
+bs = 64 # batch size
 epochs = 100 # number of epochs
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # device
 nmbed = 256
-seq_len = 5
+seq_len = 10
 
 eval_interval = 300
 
@@ -42,6 +42,7 @@ for epoch in range(epochs):
         next_action = batch['next_action']
         
         # compute loss
+        # Do i need softmax if I am using an action decoder?
         loss = F.cross_entropy(output, next_action.to(device))
         
         # print or log loss and other metrics as needed
