@@ -7,13 +7,13 @@ from transformer import Transformer
 
 class PressleyModel(nn.Module):
 
-    def __init__(self, nmbed):
+    def __init__(self, nmbed, seq_len):
         super().__init__()
 
         self.image_embedding = ImageEncoder(nmbed)
         self.action_embedding = ActionEncoder(nmbed)
         self.action_decoder = ActionDecoder(nmbed)
-        self.transfomer_model = Transformer()
+        self.transfomer_model = Transformer(context_length=seq_len)
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.nmbed = nmbed
 

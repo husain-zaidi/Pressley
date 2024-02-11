@@ -6,13 +6,12 @@ import numpy as np
 from PIL import Image
 import torchvision
 
-data_path = "/mnt/d/Downloads-D/scripted_6_18/scripted_raw/sweep_12-03/"
 # 2022-12-*05_13-16-57* -> raw"-> "traj_group*"-> "traj* -> policy_out.pkl, images0 -> im_*.jpg
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # device
 
 class BerkeleyDataset(torch.utils.data.Dataset):
 
-    def __init__(self, seq_len, test_train_split=0.3, train=True):
+    def __init__(self, seq_len, data_path, test_train_split=0.3, train=True):
         search_path = os.path.join(data_path,  "2022-12-*", "raw", "traj_group*", "traj*")
         all_traj = glob.glob(search_path)
         self.image_filenames = np.array([])

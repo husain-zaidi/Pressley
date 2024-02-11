@@ -2,26 +2,35 @@ from BerkleyDataSet import BerkeleyDataset
 from PressleyModel import PressleyModel
 import torch
 from torch.nn import functional as F
+from dataclasses import dataclass
+import tyro
+
+@dataclass
+class Args:
+    batch_size: int = 64
+    train_folder: str = "/mnt/d/Downloads-D/scripted_6_18/scripted_raw/sweep_12-03/"
+
+args = tyro.cli(Args)
 
 # define hyperparameters
 lr = 0.00001 # learning rate
-bs = 64 # batch size
+bs = args.batch_size # batch size
 epochs = 100 # number of epochs
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # device
 nmbed = 256
-seq_len = 10
+seq_len = 5
 
 eval_interval = 300
 
 # create model instance and move to device
-model = PressleyModel(nmbed)
+model = PressleyModel(nmbed, seq_len)
 model.to(device)
 
 # create optimizer and loss function
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 
-train_dataset = BerkeleyDataset(seq_len, 0.3, True)
-test_dataset = BerkeleyDataset(seq_len, 0.3, False)
+train_dataset = BerkeleyDataset(seq_len, args.train_folder, 0.3, True)
+test_dataset = BerkeleyDataset(seq_len, args.train_folder, 0.3, False)
 
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=4)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=4)
