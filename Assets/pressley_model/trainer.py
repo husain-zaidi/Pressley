@@ -4,6 +4,8 @@ import torch
 from torch.nn import functional as F
 from dataclasses import dataclass
 import tyro
+import matplotlib.pyplot as plt
+
 
 @dataclass
 class Args:
@@ -35,6 +37,10 @@ test_dataset = BerkeleyDataset(seq_len, args.train_folder, 0.3, False)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=4)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=4)
 
+train_losses = torch.zeros(epochs * len(test_dataloader) / bs)
+k = 0
+
+print('Training starts')
 for epoch in range(epochs):
     for batch in train_dataloader:
         # extract images and actions from batch 
@@ -55,13 +61,22 @@ for epoch in range(epochs):
         loss = F.cross_entropy(output, next_action.to(device))
         
         # print or log loss and other metrics as needed
-        print(f'Epoch {epoch}, Loss: {loss.item()}')
-
+        # print(f'Epoch {epoch}, Loss: {loss.item()}')
+        train_losses[k] = loss.item()
+        k = k + 1
         # backpropagate loss
         loss.backward()
 
         # update model parameters
         optimizer.step()
+    print(f'Epoch {epoch}, Mean Loss till now: {train_losses.mean()}')
+
+plt.plot(train_losses)
+plt.xlabel('Iter')
+plt.ylabel('Train Loss')
+plt.title('Train Losses')
+plt.show()
+
 
 # validation
 model.eval()
@@ -79,5 +94,11 @@ for batch in test_dataloader:
     k = k + 1
 
 print(f'Validation Loss: {losses.mean()}')
+
+plt.plot(losses)
+plt.xlabel('Iter')
+plt.ylabel('Validation Loss')
+plt.title('Validation Losses')
+plt.show()
 
 torch.save(model.state_dict(), "pressley.pth")

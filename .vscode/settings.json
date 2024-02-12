@@ -52,5 +52,6 @@
         "temp/":true,
         "Temp/":true
     },
-    "cmake.configureOnOpen": false
+    "cmake.configureOnOpen": false,
+    "CodeGPT.apiKey": "OpenAI"
 }
