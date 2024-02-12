@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
 @dataclass
 class Args:
-    batch_size: int = 64
+    batch_size: int = 10
     train_folder: str = "/mnt/d/Downloads-D/scripted_6_18/scripted_raw/sweep_12-03/"
 
 args = tyro.cli(Args)
@@ -37,7 +37,7 @@ test_dataset = BerkeleyDataset(seq_len, args.train_folder, 0.3, False)
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=4)
 test_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=4)
 
-train_losses = torch.zeros(epochs * len(test_dataloader) / bs)
+train_losses = torch.zeros(int(epochs * len(test_dataloader) / bs))
 k = 0
 
 print('Training starts')
